@@ -1,36 +1,25 @@
-using System;
-using System.Collections;
-using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Fibonacci;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
-namespace WebApi.Controllers;
-
-[ApiController]
-[Route("[controller]")]
-public class WeatherForecastController : ControllerBase
+namespace WebApi.Controllers
 {
-    private static readonly string[] Summaries = new[]
+    [ApiController]
+    [Route("[controller]")]
+    public class FibonacciController: ControllerBase
     {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
+        private readonly Compute _compute;
 
-    private readonly ILogger _logger;
-
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
-    {
-        _logger = logger;
-    }
-
-    [HttpGet]
-    public IEnumerable Get()
-    {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        public FibonacciController(Compute compute)
         {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        })
-        .ToArray();
+            _compute = compute;
+        }
+
+        [HttpGet(Name = "{number}")]
+        public async Task<List<long>> Get(string number)
+        {
+            return await _compute.ExecuteAsync(new[] {number});
+        }
     }
 }
