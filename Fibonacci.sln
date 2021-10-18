@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fibonacci.Web", "src\Fibona
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fibonacci.Tests", "tests\Fibonacci.Tests\Fibonacci.Tests.csproj", "{AEC143B9-10E1-48A1-BD0D-7EAC10282905}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApi", "src\WebApi\WebApi.csproj", "{C4CDA8E4-C906-4522-8763-084F22C866B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{AEC143B9-10E1-48A1-BD0D-7EAC10282905}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEC143B9-10E1-48A1-BD0D-7EAC10282905}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEC143B9-10E1-48A1-BD0D-7EAC10282905}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4CDA8E4-C906-4522-8763-084F22C866B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4CDA8E4-C906-4522-8763-084F22C866B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4CDA8E4-C906-4522-8763-084F22C866B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4CDA8E4-C906-4522-8763-084F22C866B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{7AE91CFB-6ECC-422E-8520-BAC449DC8F18} = {24ECF58E-6D09-4496-8705-62304611C717}
