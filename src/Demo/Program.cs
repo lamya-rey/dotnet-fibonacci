@@ -3,42 +3,40 @@ using System.Diagnostics;
 using System.IO;
 using Fibonacci;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-
-var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");             
+var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 IConfiguration configuration = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())
-    .AddEnvironmentVariables().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-    .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true)
-    .Build();       
+    .AddEnvironmentVariables()
+    .AddJsonFile("appsettings.json", false, true)
+    .AddJsonFile($"appsettings.{environmentName}.json", true, true)
+    .Build();
 var applicationSection = configuration.GetSection("Application");
 var applicationConfig = applicationSection.Get<ApplicationConfig>();
-Console.WriteLine($"Application Name : {applicationConfig.Name}");
-Console.WriteLine($"Application Message : {applicationConfig.Message}");
 
-var loggerFactory = LoggerFactory.Create(builder =>
+
+var services = new ServiceCollection();  
+services.AddTransient<FibonacciDataContext>();  
+services.AddTransient<Compute>();  
+services.AddLogging(configure => configure.AddConsole());
+
+using (var serviceProvider = services.BuildServiceProvider())
 {
-    builder.AddFilter("Microsoft", LogLevel.Warning)                 
-        .AddFilter("System", LogLevel.Warning)                 
-        .AddFilter("Demo", LogLevel.Debug)                 
-        .AddConsole();
-}     );     
-var logger = loggerFactory.CreateLogger("Demo.Program");          
-logger.LogInformation($"Application Name : {applicationConfig.Name}");    
-logger.LogInformation($"Application Message : {applicationConfig.Message}");
+    var logger =serviceProvider.GetService<ILogger<Compute>>();
+    logger.LogError($"Application Name : {applicationConfig.Name}");
+    logger.LogInformation($"Application Message : {applicationConfig.Message}");
 
 
-
-Stopwatch stopwatch = new();
-stopwatch.Start();
-
-using var fibonacciDataContext = new FibonacciDataContext();
-
-var tasks = await new Fibonacci.Compute(fibonacciDataContext).ExecuteAsync(args);
-
-foreach (var task in tasks) Console.WriteLine($"Fibo result: {task}");
-stopwatch.Stop();
+    Stopwatch stopwatch = new();
+    stopwatch.Start();
+    var compute = serviceProvider.GetService<Compute>();
+    var tasks = await compute.ExecuteAsync(args);
+    foreach (var task in tasks) Console.WriteLine($"Fibo result : {task}");
+    stopwatch.Stop();
+    Console.WriteLine($"{stopwatch.Elapsed.Seconds}s");
+}
 
 public class ApplicationConfig
 {
